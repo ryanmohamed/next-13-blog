@@ -41,6 +41,7 @@ const ArticleTitles: string[] = [
   "The Rise of Sustainable Architecture",
   "The Science of Climate Change",
   "Exploring the Human Genome",
+  "Test Name"
 ];
 
 export default ArticleTitles;
