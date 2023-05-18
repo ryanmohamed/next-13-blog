@@ -74,7 +74,32 @@ ArticlePanel acts a side-panel and a collapsible top-panel on small screens. Thi
 
 4. Added carousel to mobile version of `ArticlePanel`.  
 
-4. Media query hook. 
+5. Media query hook. 
 
 ## Next Steps
 - Debounce the media query hook to avoid updating the UI rapidly. Wait until final change has been made. 
+
+# Development Log: Debounced media query hook
+
+## Overview
+Implemented debounce wrapper to avoid unnecessary changes to the UI when the screen is resized. Directly inspired, sourced, and modifed from [Web Dev Simplified](https://blog.webdevsimplified.com/2022-03/debounce-vs-throttle)
+
+## Changes Made
+1. Added slight TypeScript version of debounce fn provided by WDS.
+```
+function debounce(cb: CallableFunction, delay = 250) {
+    let timeout: any
+    return (...args: any[]) => {
+      clearTimeout(timeout)
+      timeout = setTimeout(() => {
+        cb(...args)
+      }, delay)
+    }
+}
+```
+
+2. Added debounce wrapper for setState function.  
+
+## Next Steps
+- Try removing the transition property from `ArticlePanel` descendants when on medium sized screens. 
+
