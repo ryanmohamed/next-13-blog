@@ -1,6 +1,12 @@
 import Link from "next/link";
 import Article from "../../components/server/Article/Article";
-import CodeSnippet from "@/components/client/CodeSnippet/CodeSnippet";
+import dynamic from "next/dynamic"
+
+const CodeSnippet = dynamic(
+  () => import("@/components/client/CodeSnippet/CodeSnippet")
+  .then(mod => mod.default),
+  { ssr: false }
+)
 
 export default function Blog() {
   return (

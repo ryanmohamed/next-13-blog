@@ -50,10 +50,17 @@ Contributions are welcome! If you'd like to contribute to this project, please f
 
 5. Submit a pull request with a description of your changes.
 
-# Development Log: Turning ArticlePanel to Client Component for Interactivity
-Added asynchronous light build of react-syntax-hightlighter
+# Development Log: Lazy loaded Code Snippets
 
-# Development Log: Turning ArticlePanel to Client Component for Interactivity
+## Overview
+`CodeSnippet`component created and lazy loaded with Next's `dynamic()`. Component supports a subset of features from `SyntaxHighlighter`.
+
+## Changes Made
+1. Used `react-syntax-highlighter` and it's `PrismAsyncLight` build to selectively import languages and styles. 
+
+2. Created wrapper client-component `CodeSnippet`.
+
+# Development Log: Interactive Responsive ArticlePanel
 
 ## Overview
 ArticlePanel acts a side-panel and a collapsible top-panel on small screens. This requires interactivity - thus needs to be a client component. Keep in mind Next13 pre-renders client components on the server and then hydrated clientside, so they're not entirely "client-side". SEO is still supported for all titles in the elements. 
@@ -63,10 +70,11 @@ ArticlePanel acts a side-panel and a collapsible top-panel on small screens. Thi
 
 2. Updated the component `ArticlePanel` component to be client component with `"use client";`
 
-3. Added slide in styles with `expanded` state based ternaries in Tailwind string literals.
+3. Side panel for medium sized screens `(min-width: 768px)` and top panel for large screens. Top panel more stable and DOM friendly. 
 
-4. Removed scrolling from body when `expanded` is true.
+4. Added carousel to mobile version of `ArticlePanel`.  
+
+4. Media query hook. 
 
 ## Next Steps
-- Test the implementation thoroughly, ensuring both server-side rendering and interactivity work as expected.
-- Consider additional optimizations or enhancements based on user feedback or specific requirements.
+- Debounce the media query hook to avoid updating the UI rapidly. Wait until final change has been made. 
