@@ -10,7 +10,7 @@ const CodeSnippet = dynamic(
 
 export default function Blog() {
   return (
-    <main className="p-6 sm:p-10 xl:px-48 xl:py-20">
+    <main className="p-6 sm:p-10 xl:px-48 xl:py-20 overflow-x-hidden">
       {/* <Link href="/">Home</Link> */}
       <Article
         title="Tailwind, a CSS dream."

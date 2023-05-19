@@ -17,10 +17,10 @@ interface InteractiveBlogNavProps {
 
 function PanelItem({ href, className, children, ...props }: PanelItemProps) {
   return (
-    <div className="p-1">
-      <p className="border-white border-2 p-2 rounded w-full h-full md:border-0 md:p-0" {...props}>
+    <div className="p-4 box-border h-full">
+      <p className="border-white border-2 p-2 sm:p-2 rounded w-full h-full md:border-0 md:p-0" {...props}>
         <Link href="/" className="w-4/5">
-          <span className="text-md lg:text-lg xl:text-xl font-semibold whitespace-wrap break-words md:whitespace-pre-line">
+          <span className="text-sm sm:text-sm lg:text-lg xl:text-xl font-semibold whitespace-wrap break-words md:whitespace-pre-line">
             {children}
           </span>
         </Link>
@@ -29,42 +29,43 @@ function PanelItem({ href, className, children, ...props }: PanelItemProps) {
   );
 }
 
-function Carousel() {
+function ArticlePanelContent() {
+  const md = useMediaQuery("(min-width: 768px)");
   const amount = 6;
   const pages = Math.ceil(ArticleTitles.length / amount);
-
   return (
-    <div
-      className="bg-purple-800 p-10 md:p-0 h-96 w-full md:h-full md:flex md:flex-col"
-    >
-     
-      <div className="w-full h-full overflow-hidden  md:overflow-auto md:scrollbar-hide">
-
-      <Container />
-
-      </div>
-     
+    <div className="box-border md:p-0 w-full h-fit md:h-full md:flex md:flex-col">
+      {!md ? <Carousel md={md}/> : <p> hi</p>}
     </div>
   );
 }
 
 /* DEPENDANT ON TAILWIND MD SIZE */
-function Container () {
-  const md = useMediaQuery("(min-width: 768px)");
+function Carousel ({md}:any) {
+  const [currentPage, setCurrentPage] = useState<number>(0);
   const containerRef = useRef<HTMLDivElement>(null);
 
+  const sm = useMediaQuery("(min-width: 640px)");
+
+  useEffect(() => {
+    if (sm) setNumPerPage(6);
+    else setNumPerPage(4);
+  }, [sm])
+
   const pages = [];
-  const numPerPage = 6;
+  const [numPerPage, setNumPerPage] = useState(4);
   const numPages = Math.ceil(ArticleTitles.length / numPerPage);
   let startIndex = 0
+
+  // sub arrays, each length = numPerPage
   for(let i = 0; i < numPages; i++){
     pages.push(<Page pages={ArticleTitles.slice(startIndex, startIndex+6)}/>);
     startIndex += numPerPage
   }
 
-  const [currentPage, setCurrentPage] = useState<number>(0);
-
+  // wraps first page to end 
   const nextPage = () => { 
+    setCurrentPage((currentPage+1)%numPages)
     const firstItem = containerRef?.current?.children[0] as HTMLLIElement;
     const firstItemWidth = Math.floor(firstItem?.offsetWidth) || 0;
 
@@ -83,7 +84,11 @@ function Container () {
     });
   }
 
+  // wraps last page to start 
   const prevPage = () => {
+    if(currentPage-1 < 0) setCurrentPage(numPages-1);
+    else setCurrentPage(currentPage-1);
+
     const container = containerRef?.current;
     const lastItem = container?.children[container.children.length - 1] as HTMLLIElement;
     const lastItemWidth = Math.floor(lastItem?.offsetWidth) || 0;
@@ -104,33 +109,39 @@ function Container () {
   };
 
   return (
-    <>
-    <button onClick={prevPage} className="absolute top-0 left-0 md:hidden">⏪</button>
-    <div
-      ref={containerRef}
-      className={`bg-blue-500 transition grid h-full w-full md:translate-x-[0] md:flex md:flex-col md:gap-2 md:h-auto`}
-      style={{ transform: `${ md ? "translateX(0)" : ""}`, gridAutoFlow: "column", gridAutoColumns: "100%" }}
-    >
-      {pages}
+    <div className="w-full h-full">
+      <div className="bg-emerald-800 flex justify-between items-center p-4 px-6">
+        <button onClick={prevPage} className="h-min md:hidden">Previous</button>
+        <div className="mb-4 p-2 px-2 h-1 w-full flex flex-wrap justify-center items-center gap-1" style={{ gridRow: "2/3", gridColumn: "1/4" }}>
+          { pages.map((page: any, key: Key) => <div className={`h-1 w-1/12 rounded-sm ${key === currentPage ? "bg-slate-600" : "bg-slate-200"}`}></div> ) }
+        </div>
+        <button onClick={nextPage} className="h-min md:hidden">Next</button>
+      </div>
+      <div className=" w-full h-full overflow-hidden">
+        <div
+          ref={containerRef}
+          className={`h-min transition grid md:translate-x-[0] relative`}
+          style={{ transform: `${ md ? "opacity-0" : "opacity-100"}`, gridAutoFlow: "column", gridAutoColumns: "100%" }}
+        >
+          {pages}
+        </div>
+      </div>
     </div>
-    <button onClick={nextPage} className="absolute top-0 right-0 md:hidden">⏩</button>
-    </>
   );
 }
 
 function Page ({pages}: {pages: string[]}) {
   return (
-    <div className="bg-cyan-900 h-full w-full">
-      <div
-        className={`h-full w-full inline-grid grid-cols-3 grid-rows-2`}
-        >
-          {pages.map((val: any, key: any) => (
-            <PanelItem href="/" key={key}>
-              {val}
-            </PanelItem>
-          ))}
-        </div>
-    </div>
+    <div
+      className={`bg-emerald-800 w-full h-fit grid xs:grid-cols-3 grid-cols-2 xs:grid-row-2 grid-row-3`}
+      style={{ gridAutoRows: "max-content"}}
+    >
+        {pages.map((val: any, key: any) => (
+          <PanelItem href="/" key={key}>
+            {val}
+          </PanelItem>
+        ))}
+      </div>
   )
 }
 
@@ -156,13 +167,13 @@ export default function ArticlePanel({ children }: InteractiveBlogNavProps) {
         {expanded ? "Close" : "See more"}
       </button>
       <nav
-        className={`bg-emerald-950 md:scrollbar-hide md:overflow-y-scroll z-[80] md:fixed md:left-0 md:w-40 lg:w-56 md:h-full 
+        className={`md:bg-emerald-800 md:scrollbar-hide md:overflow-y-scroll z-[80] md:fixed md:left-0 md:w-40 lg:w-56 md:h-full 
         w-full absolute bot-0 flex transition
         ${expanded ? "translate-y-0" : "translate-y-[-100%]"}
         md:translate-y-0
         `}
       >
-        <Carousel />
+        <ArticlePanelContent />
       </nav>
     </div>
   );
