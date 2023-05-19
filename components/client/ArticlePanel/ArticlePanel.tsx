@@ -17,7 +17,7 @@ interface InteractiveBlogNavProps {
 
 function PanelItem({ href, className, children, ...props }: PanelItemProps) {
   return (
-    <div className="p-4 box-border h-full">
+    <div className="p-4 box-border h-full ">
       <p className="border-white border-2 p-2 sm:p-2 rounded w-full h-full md:border-0 md:p-0" {...props}>
         <Link href="/" className="w-4/5">
           <span className="text-sm sm:text-sm lg:text-lg xl:text-xl font-semibold whitespace-wrap break-words md:whitespace-pre-line">
